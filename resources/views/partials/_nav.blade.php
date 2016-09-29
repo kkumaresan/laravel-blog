@@ -31,6 +31,7 @@
                         <li>Hi, {{ Auth::user()->name }}</li>
                         <li><a href="{{ Route('posts.index') }}">Posts</a></li>
                         <li><a href="{{ Route('categories.index') }}">Categories</a></li>
+                        <li><a href="{{ Route('tags.index') }}">Tags</a></li>
                         <li role="separator" class="divider"></li>
                         <li>
                             <a href="{{ url('/logout') }}"

@@ -14,6 +14,10 @@ Route::get('blog/{slug}', ['as' => 'blog.single', 'uses' => 'BlogController@getS
 
 Route::get('blog', ['as' => 'blog.index', 'uses' => 'BlogController@getIndex']);
 
+Route::get('fileentry', 'FileEntryController@index');
+Route::get('fileentry/get/{filename}', [ 'as' => 'getentry', 'uses' => 'FileEntryController@get']);
+Route::post('fileentry/add', [ 'as' => 'addentry', 'uses' => 'FileEntryController@add']);
+
 Route::get('contact', 'PagesController@getContact');
 
 Route::get('about', 'PagesController@getAbout');
@@ -23,6 +27,8 @@ Route::get('/', 'PagesController@getHome');
 Route::resource('posts', 'PostController');
 
 Route::resource('categories', 'CategoryController', ['except' => ['create']]);
+
+Route::resource('tags', 'TagController', ['except' => ['create']]);
 
 Auth::routes();
 

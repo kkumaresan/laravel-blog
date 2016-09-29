@@ -2,11 +2,13 @@
 
 namespace App;
 
+use App\Post;
 use Illuminate\Database\Eloquent\Model;
 
 class Tag extends Model
 {
     public function posts(){
-        $this->belongsToMany('App\Post');
+        return $this->belongsToMany('App\Post');
     }
+
 }

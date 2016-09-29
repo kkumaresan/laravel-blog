@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Category;
+use App\Tag;
 use App\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -40,7 +41,8 @@ class PostController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('posts.create')->with('categories', $categories);
+        $tags = Tag::all();
+        return view('posts.create')->with('categories', $categories)->with('tags', $tags);
     }
 
     /**
@@ -51,6 +53,8 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        //dd($request);
+
         $this->validate($request, array(
             'title' => 'required|max:255',
             'slug' => 'required|alpha_dash|min:5|max:255|unique:posts,slug',
@@ -65,6 +69,8 @@ class PostController extends Controller
         $post->body = $request->body;
 
         $post->save();
+
+        $post->tags()->sync($request->tags, false);
 
         Session::flash('success', 'Post Saved!');
 
@@ -82,7 +88,8 @@ class PostController extends Controller
     {
         $post = Post::find($id);
         $categories = Category::all();
-        return view('posts.show')->withPost($post)->withCategories($categories);
+        $tags = Tag::all();
+        return view('posts.show')->withPost($post)->withCategories($categories)->with('tags', $tags);
     }
 
     /**
@@ -99,7 +106,13 @@ class PostController extends Controller
         foreach($categories as $category){
             $cats[$category->id] = $category->name;
         }
-        return view('posts.edit')->withPost($post)->withCategories($cats);
+
+        $tags = Tag::all();
+        $tagArray = array();
+        foreach($tags as $tag){
+            $tagArray[$tag->id] = $tag->name;
+        }
+        return view('posts.edit')->withPost($post)->withCategories($cats)->with('tags', $tagArray);
     }
 
     /**
@@ -134,6 +147,12 @@ class PostController extends Controller
         $post->body = $request->input('body');
 
         $post->save();
+
+        if(isset($request->tags)){
+            $post->tags()->sync($request->tags, true);
+        } else {
+            $post->tags()->sync(array(), true);
+        }
 
         Session::flash('success', 'Post Updated!');
 
